@@ -346,7 +346,7 @@ Each layer has a specific role and communicates only with the layer above and be
             - If ACK is lost or delayed, sender retransmits → further reducing efficiency.
 
 -   Go Back-N ARQ
-    -   Go-Back-N is a Sliding Window Protocol where the sender can transmit multiple frames at once (up to window size N) without waiting for acknowledgements. However, if an error is detected, the sender retransmits the lost/damaged frame and all frames after it, hence the name *Go-Back-N*.
+    -   Go-Back-N is a Sliding Window Protocol where the sender can transmit multiple frames at once (up to window size N) without waiting for acknowledgements. However, if an error is detected, the sender retransmits the lost/damaged frame and all frames after it, hence the name Go-Back-N.
 
     -   Characteristics
         - Pipeline (continuous) sending: Sender can send up to N frames before needing an ACK.
@@ -462,4 +462,571 @@ Each layer has a specific role and communicates only with the layer above and be
     -   Comparison : ![alt text](image-7.png)
     -   Generally, Stop and Wait mostly used in Data Link layer as the propogation delay is very small.
     -   Go back N and selective Repeat are used in Transport Layer Because propogation delay is huge and Bandwidth is High
+
+-   Network Layer
+
+    The Network Layer is responsible for delivering data from one host to another located in different networks. It handles logical addressing, routing, path selection, and packet forwarding.
+
+    At this layer, the segment is called a Packet.
+
+
+    -   Core Responsibilities of the Network Layer
+
+         1. Routing
+        - Determines the best path (shortest/optimal route) for packets to travel from source to destination.
+        - Uses routing algorithms and routing tables within routers.
+
+         2. Logical Addressing
+        - Assigns IP addresses to uniquely identify devices globally.
+        - Adds Source IP and Destination IP to the packet header.
+        - Allows communication across different networks.
+
+         3. Internetworking
+        - Connects different networks (LAN, WAN, Wi-Fi, 3G, Ethernet, etc.).
+        - Achieved using routers that operate at the network layer.
+
+         4. Fragmentation & Reassembly
+        - If a packet is too large, the network layer breaks it into smaller fragments.
+        - Destination reassembles the fragments to form the original packet.
+        - Necessary due to varying MTUs (Maximum Transmission Units) across networks.
+
+         5. Routing and Forwarding
+        - Routing → Global decision (finding the path).
+        - Forwarding → Local decision (hop-by-hop packet delivery using routing table).
+
+         6. Scalability via Hierarchy
+        - Uses hierarchical IP addressing (network + host portions).
+        - Helps Internet scale to billions of devices.
+
+         7. Bandwidth Control
+        - Optimizes usage of network bandwidth.
+        - Avoids packet flooding and congestion.
+
+    -   Devices Involved in Network Layer Operations
+
+         1. Switch
+        - Operates at Data Link Layer (Layer 2).
+        - Multi-port bridge with buffering.
+        - Forwards frames using MAC addresses.
+        - Divides collision domains but keeps broadcast domain same.
+        - Performs error checking before forwarding.
+
+         2. Router
+        - Operates at Network Layer (Layer 3).
+        - Routes packets using IP addresses.
+        - Connects LANs, WANs, and different technologies.
+        - Maintains a routing table.
+        - Divides broadcast domains.
+
+         3. Brouter (Bridge + Router)
+        - Can work at Layer 2 or Layer 3.
+        - Routes IP packets like a router.
+        - Filters LAN traffic like a bridge.
+
+         4. Repeater
+        - Operates at Physical Layer (Layer 1).
+        - Regenerates weak/corrupted signals bit-by-bit.
+        - Does not amplify, only regenerates.
+        - Extends network length.
+        - 2-port device.
+
+         5. Hub
+        - Multiport repeater (Layer 1).
+        - Broadcasts incoming data to all ports → single collision domain.
+        - Cannot filter data or choose optimal paths.
+
+        Types:
+        - Active Hub: Boosts and regenerates signals (extends distance).
+        - Passive Hub: Just connects wires; does not boost signals.
+
+         6. Bridge
+        - Operates at Data Link Layer (Layer 2).
+        - Filters frames using MAC addresses.
+        - Connects two LANs with the same protocol.
+        - 2-port device.
+
+        Types:
+        - Transparent Bridge: Stations unaware of its existence; supports learning & forwarding.
+        - Source Routing Bridge: Route specified by sender via a discovery frame.
+
+         7. Gateway
+        - Operates at any OSI layer (often Layer 7).
+        - Connects networks using different protocols.
+        - Performs protocol conversion.
+        - More complex than router/switch.
+
+    -   Why Network Layer Is Needed
+
+        1. Delivers data across different networks (beyond single LAN).
+        2. Adds logical addressing (IP) for global communication.
+        3. Selects the best route using routing algorithms.
+        4. Enables internetworking using routers.
+        5. Provides fragmentation for networks with smaller MTUs.
+        6. Maintains scalability for large internetworks like the Internet.
+
+    -   Key Functions (Summary)
+
+        - Delivers packets end-to-end.
+        - Uses IP addresses for communication.
+        - Performs routing using routers.
+        - Enables communication across different networks.
+        - Handles fragmentation and reassembly.
+        - Supports hierarchical addressing and scalability.
+
+-   Circuit Switching vs Packet Switching
+
+    Circuit Switching and Packet Switching are two standard methods of transmitting data between end-devices over a network. Circuit Switching is historically used but has largely been replaced by Packet Switching in modern networks.
+
+
+    -   Circuit Switching
+        - A dedicated communication path is established between sender and receiver.
+        - Thus, a dedicated fixed path is established where data is transmitted without delays (as there is no concept of network congestion).
+        - Example: Traditional telephone networks.
+
+        Key Points
+        - Suitable for continuous transmission (dedicated line).
+        - Guaranteed data rate.
+        - Inefficient if line is idle.
+        - Leads to under-utilization of resources in most cases.
+
+    -   Packet Switching
+        - Data is divided into small units called packets.
+        - Each packet contains payload + control information.
+        - No pre-established path; packets may take different routes to the destination. In other words, packets belonging to the same file may or may not travel through the same path. If there is congestion at some path, packets are allowed to choose different path possible over an existing network
+        - Uses store-and-forward technique: each hop stores the packet temporarily before forwarding.
+
+        Key Points
+        - Efficient use of network resources.
+        - Packets may arrive out-of-order.
+        - Variable transmission delay.
+        - More suitable for small messages or bursty traffic.
+
+    -   Advantages of Packet Switching over Circuit Switching
+        - Better bandwidth utilization (no dedicated line reservation).  
+        - Minimal transmission latency.  
+        - Reliable (destination can detect missing packets).  
+        - Fault tolerant (packets can take alternative paths if a link fails).  
+        - Cost-effective and easier to implement.
+
+    -   Disadvantages of Packet Switching over Circuit Switching
+        - Packets may arrive out-of-order → need sequence numbers.  
+        - Higher node complexity (routers must handle multiple paths).  
+        - Transmission delay can increase due to rerouting.  
+        - Circuit switching can be better for large/bursty data.
+
+    -   Modes of Packet Switching
+
+    1. Connection-Oriented Packet Switching (Virtual Circuit)
+        - Establishes a logical path before sending data.
+        - All packets follow the same path.
+        - Virtual Circuit ID is provided by switches/routers to uniquely identify this virtual connection.
+        - Uses sequence numbers to maintain order.
+        - Phases: Setup → Data Transfer → Teardown.
+        - All address information is only transferred during setup phase. Once the route to destination is discovered, entry is added to switching table of each intermediate node. During data transfer, packet header (local header) may contain information such as length, timestamp, sequence number etc. Connection-oriented switching is very useful in switched WAN.
+        - Example protocols: X.25, Frame-Relay, ATM, MPLS.
+
+    2. Connectionless Packet Switching (Datagram)
+        - Each packet contains full addressing information (source, destination, port, etc.).
+        - Packets are independent; may take different routes.
+        - No setup/teardown phase.
+        - Reliability is handled by end systems using additional protocols.
+        - Packet delivery is not guaranteed in connectionless packet switching, so the reliable delivery must be provided by end systems using additional protocols.
+        - Example: Internet (IP networks).
+
+-   Classful Addressing
+    To uniquely identify a device in a network, we use logical addresses called IP addresses.  
+
+    - IPv4: 32-bit addresses → 2³² addresses.  
+    - IPv6: 128-bit addresses → supports a much larger number of devices.  
+
+    IPv4 addresses are generally represented in dotted decimal format: `x.x.x.x`.
+
+    -    What is Classful Addressing?
+
+        The 32-bit address space in IPv4 is divided into 5 classes (A, B, C, D, E) based on network size:  
+
+        - Network ID: Identifies the network.  
+        - Host ID: Identifies each host within the network.  
+
+        Classes A, B, C → Unicast addressing (different organization sizes)  
+        Class D → Multicast  
+        Class E → Experimental / military  
+
+        -   IP Classes ![alt text](image-8.png)
+
+        Class A ![alt text](image-9.png)
+        - Network ID: 8 bits, Host ID: 24 bits  
+        - First bit: 0  
+        - Subnet Mask: 255.0.0.0  
+        - Host IDs per network: 2²⁴ - 2 = 16,777,214 Host IDs (2 is subtracted because of x.0.0.0 is reserved for Network ID and x.255.255.255 is used for limited-broadcasting)
+        - Number of networks: 2⁷ - 2 = 127 Networks (2 is subtracted because 0.0.0.0 and 127.x.y.z are reserved for special purposes)
+        - IP Range: 1.0.0.0 – 126.255.255.255  
+
+        Class B ![alt text](image-10.png)
+        - Network ID: 16 bits, Host ID: 16 bits  
+        - First two bits: 10  
+        - Subnet Mask: 255.255.0.0  
+        - Host IDs per network: 2¹⁶ - 2 = 65,534  
+        - Number of networks: 2¹⁴ = 16,384  
+        - IP Range: 128.0.0.0 – 191.255.255.255  
+
+        Class C ![alt text](image-11.png)
+        - Network ID: 24 bits, Host ID: 8 bits  
+        - First three bits: 110  
+        - Subnet Mask: 255.255.255.0  
+        - Host IDs per network: 2⁸ - 2 = 254  
+        - Number of networks: 2²¹ = 2,097,152  
+        - IP Range: 192.0.0.0 – 223.255.255.255  
+
+        Class D ![alt text](image-12.png)
+        - Reserved for multicasting  
+        - First four bits: 1110  
+        - No subnet mask  
+        - IP Range: 224.0.0.0 – 239.255.255.255  
+
+        Class E ![alt text](image-13.png)
+        - Reserved for experimental / research / military use  
+        - First four bits: 1111  
+        - No subnet mask  
+        - IP Range: 240.0.0.0 – 255.255.255.254  
+
+-   Network Address Translation (NAT)
+    
+    -   Types of IP Addresses
+
+        1. Public IP Address
+        - Can be accessed over the Internet.
+        - Globally unique IP assigned to a device.
+        - Example: Your public IP can be seen on websites like "What is my IP".
+
+        2. Private IP Address
+        - Used within a private network.
+        - Not exposed directly to the Internet.
+        - Example: Computers in a home network get private IPs from the router via DHCP.
+        - Reserved Private IP Ranges (by IANA/InterNIC):
+        - Class A: 10.0.0.0 – 10.255.255.255  
+        - Class B: 172.16.0.0 – 172.31.255.255  
+        - Class C: 192.168.0.0 – 192.168.255.255  
+        - APIPA: 169.254.0.0 – 169.254.255.255
+
+    -   Network Address Translation (NAT)
+
+        - Purpose: Allow multiple devices in a private network to access the Internet using a single public IP.
+        - How it works: Translates private IP → public IP (and vice versa). Also translates port numbers to distinguish hosts.
+        - Typically implemented on a router or firewall.
+
+        NAT Working
+        1. Inside network → Outside network: NAT converts private IP to public IP.  
+        2. Outside network → Inside network: NAT converts public IP back to private IP.  
+        3. If NAT runs out of public addresses, packets are dropped and an ICMP host unreachable message is sent.
+
+        Why mask port numbers?
+        - Multiple hosts may use the same source port.
+        - NAT modifies port numbers to prevent ambiguity when replies arrive.
+        - Maintains a NAT table mapping internal IP:port to external IP:port.
+
+
+    -   NAT Address Types
+    Inside refers to the addresses which must be translated. Outside refers to the addresses which are not in control of an organisation. These are the network Addresses in which the translation of the addresses will be done.
+
+    | NAT Term | Meaning | ![alt text](image-14.png)
+    |----------|---------|
+    | Inside Local Address | Private IP assigned to a host inside the network (seen internally). |
+    | Inside Global Address | Public IP representing one or more private IPs to the outside world. |
+    | Outside Local Address | IP of the destination host as seen from inside after translation. |
+    | Outside Global Address | Actual IP of the destination host on the Internet (before translation). |
+
+    -   NAT Types
+
+        1. Static NAT
+        - One-to-one mapping: private IP → public IP.
+        - Commonly used for web hosting.
+        - Limitation: Costly if many devices need Internet access.
+
+        2. Dynamic NAT
+        - Private IP → Public IP from a pool of available public IPs.
+        - Limitation: Only as many private devices can access as there are IPs in the pool.
+        Suppose, if there is a pool of 2 public IP addresses then only 2 private IP addresses can be translated at a given time. If 3rd private IP address wants to access Internet then the packet will be dropped therefore many private IP addresses are mapped to a pool of public IP addresses. NAT is used when the number of users who wants to access the Internet is fixed. This is also very costly as the organisation have to buy many global IP addresses to make a pool.
+
+        3. Port Address Translation (PAT) / NAT Overload
+        - Many private IPs → single public IP.
+        - Port numbers distinguish traffic between devices.
+        - Cost-effective; used in home routers for thousands of devices.
+
+    -   Advantages of NAT
+        - Conserves public IP addresses.
+        - Provides privacy (internal IPs are hidden).
+        - Eliminates address renumbering when networks evolve.
+
+    -   Disadvantages of NAT
+        - Translation adds path delays.
+        - Some applications may not work properly.
+        - Complicates tunneling protocols like IPsec.
+        - Router interferes with transport layer port numbers (NAT violates strict layering).
+
+-   Subnetting
+    When a larger network is divided into smaller networks to improve security and manageability, this process is known as Subnetting. Smaller networks are easier to maintain and control.
+
+    -   Network Address and Mask
+
+        - Network Address: Identifies a network on the Internet. Using this, we can determine the range of addresses and total possible hosts in the network.
+        - Mask (Subnet Mask): A 32-bit binary number used to extract the network address from any IP address via a bitwise AND operation.
+
+        Default Masks for IP Classes:
+
+        | Class | Default Subnet Mask |
+        |-------|-------------------|
+        | A     | 255.0.0.0         |
+        | B     | 255.255.0.0       |
+        | C     | 255.255.255.0     |
+
+        Example:  
+        Given IP address `132.6.17.85` (Class B), default mask `255.255.0.0`:  
+        - Keep the first 2 bytes, set others to 0 → Network Address = `132.6.0.0`. (or do bitwise & to get network address 132.6.17.85 & 255.255.0.0)
+
+    -   Calculations in Subnetting
+
+        1. Number of Subnets:  
+        `2^(given bits for mask - no. of bits in default mask)`
+
+        2. Subnet Address:  
+        Bitwise AND of subnet mask and IP address.
+
+        3. Broadcast Address:  
+        Network bits remain, host bits set to 1.
+
+        4. Number of Hosts per Subnet:  
+        `2^(32 - subnet mask bits) - 2`
+
+        5. First Host ID:  
+        `Subnet Address + 1`
+
+        6. Last Host ID:  
+        `Subnet Address + Number of Hosts`
+
+        Example:  
+        IP: `172.16.0.0/25` (Class B)
+        The /25 means the first 25 bits are the network + subnet ID, and the remaining 7 bits are for host IDs.
+
+        - Number of subnets: `2^(25-16) = 512`  
+        - Number of hosts per subnet: `2^(32-25) - 2 = 126`  
+        - First subnet block:
+        - Subnet Address: `172.16.0.0`
+        - First Host ID: `172.16.0.1`
+        - Last Host ID: `172.16.0.126`
+        - Broadcast Address: `172.16.0.127`
+
+    -   Finding Network ID (NID) of a Subnet
+
+        - Subnet Mask identifies which IP belongs to which subnet.
+        - Network ID and Subnet ID bits are 1s, Host ID bits are 0s.
+
+        Example 1:  
+        IP: `193.1.2.129` (Class C)  
+        Subnet Mask: `255.255.255.192`  
+
+        - Binary AND → `11000001.00000001.00000010.10000000`  
+        - NID = `193.1.2.128` → Belongs to subnet 3
+
+        Example 2:  
+        IP: `193.1.2.67` (Class C)  
+        Subnet Mask: `255.255.255.192`  
+
+        - Binary AND → `11000001.00000001.00000010.01000000`  
+        - NID = `193.1.2.64` → Belongs to subnet 2
+
+    -   Dividing Networks
+
+        To divide a network into multiple subnets, bits are borrowed from host ID part:
+
+        - Class C → 24 bits network, 8 bits host
+        - Divide into 2 subnets → borrow 1 bit from host ID:
+        - Subnet 1: First host bit = 0 → Range `193.1.2.0 - 193.1.2.127`
+        - Subnet 2: First host bit = 1 → Range `193.1.2.128 - 193.1.2.255`
+
+        - Divide into 4 subnets → borrow 2 bits from host ID:
+        - Subnet 1: `193.1.2.0 - 193.1.2.63`
+        - Subnet 2: `193.1.2.64 - 193.1.2.127`
+        - Subnet 3: `193.1.2.128 - 193.1.2.191`
+        - Subnet 4: `193.1.2.192 - 193.1.2.255`
+
+        - Subnet Mask: `11111111.11111111.11111111.11000000 = 255.255.255.192`
+
+        Bit Summary:  
+        - Network ID: 24 bits  
+        - Subnet ID: 2 bits  
+        - Host ID: 6 bits
+
+    -   Advantages of Subnetting
+
+        - Provides security between networks (e.g., different departments in an organization).  
+        - Allows certain subnets to have higher network priority.  
+        - Easier maintenance in small networks.
+
+    -   Disadvantages of Subnetting
+        - Increases time complexity: Communication requires more routing steps.  
+        - Single network: Source → Destination Host → Process  
+          Subnetted network: Source → Destination Network → Subnet → Host → Process  
+          Wastes IP addresses: Two addresses per subnet are reserved (Network & Broadcast).  
+          Example: 4 subnets → 8 wasted addresses  
+        - Decreases network size and increases cost: Requires routers, switches, hubs, bridges, and experienced administrators.
+
+    -   Variable Length Subnet Mask (VLSM)
+        - VLSM allows different subnets within a network to have different masks, increasing flexibility and efficient IP usage.  
+        - It is essentially subnetting a subnet.
+
+-  Classless Addressing (CIDR), Subnetting & Supernetting
+    As we have already learned about Classful Addressing, in Classful addressing the number of hosts within a network is fixed depending on the network class:  
+    - Class A: 2^24 hosts  
+    - Class B: 2^16 hosts  
+    - Class C: 2^8 hosts  
+
+    Classful addressing has several shortcomings:  
+    - Class A & B networks have huge numbers of IP addresses, most of which get wasted even in large organizations.  
+    - Class C networks often have insufficient addresses for many organizations.  
+    - Class D is reserved for multicast; Class E is for experimental/research purposes.  
+
+    -   CIDR (Classless Inter-Domain Routing)
+    CIDR was introduced to overcome the limitations of Classful addressing. It allows flexible subnetting of the IP address space according to actual requirements, reducing wastage.
+
+    - Representation: `a.b.c.d/n`  
+    - `n` = number of bits in the Network/Block ID  
+    - Example: `20.10.50.100/20`  
+
+    - Rules for forming CIDR blocks
+    1. All IP addresses must be contiguous.  
+    2. Block size must be a power of 2 (2^n).  
+    3. The first IP address of the block must be evenly divisible by the size of the block.  
+
+    Example: Check if `100.1.2.32 to 100.1.2.47` is a valid block:  
+    - Total IPs = 16 → 2^4 = 16 ✅  
+    - First IP binary = `100.1.2.00100000` → last 4 bits zero ✅  
+    - All rules satisfied → valid block ✅  
+
+    -   Subnetting
+    Subnetting divides a large network into smaller sub-networks (subnets) to improve security, management, and efficiency.
+
+    - Network Address: Identifies the network.  
+    - Subnet Mask: 32-bit binary used to determine network ID by ANDing with IP address.  
+
+    # Example:
+    - IP: `172.16.21.23/25`  
+    - IP in binary: `10101100.00010000.00010101.00010111`  
+    - Subnet mask (/25): `11111111.11111111.11111111.10000000` = 255.255.255.128  
+    - Network ID: `172.16.21.0`  
+    - Usable hosts: 2^(32-25) - 2 = 126  
+
+    # Why Subnet?
+    - Improves security between subnets.  
+    - Allows prioritization of some networks.  
+    - Easier maintenance for smaller networks.  
+
+    Drawbacks:  
+    - Communication between subnets may require more steps → higher latency.  
+    - Wasted IPs for each subnet (network + broadcast address).  
+    - Additional hardware and expertise increase cost.
+
+    -   Supernetting
+    Supernetting is the reverse of subnetting: combining multiple contiguous networks into a larger block.
+
+    Rules for Supernetting:  
+    1. All IP addresses must be contiguous.  
+    2. Networks must be of equal size (power of 2).  
+    3. The first IP must be divisible by the total size of the supernet.
+
+    # Example:
+
+    Four contiguous /24 networks:  
+    - N1: 200.1.0.0/24  
+    - N2: 200.1.1.0/24  
+    - N3: 200.1.2.0/24  
+    - N4: 200.1.3.0/24  
+
+    - Total addresses = 4 * 2^8 = 2^10 → /22  
+    - Binary first IP: `200.1.0.0` = `11001000.00000001.00000000.00000000`  
+    - Resulting supernet: `200.1.0.0/22` ✅  
+
+    This allows aggregation of multiple networks into a single routing entry, reducing the size of routing tables.
+
+    -   Note: Gateway, DNS, and DHCP
+        - Gateway IP: Usually the first usable IP in the subnet, assigned to the router for routing packets outside the subnet. 
+        - DNS (Domain Name System) Server: Resolves human-readable domain names into IP addresses so nodes can access resources on the network or Internet.  
+        - DHCP (Dynamic Host Configuration Protocol):  
+            - Automatically assigns IP addresses to new nodes joining the network.  
+            - Provides subnet mask, gateway IP, and DNS server information.  
+            - Ensures private IP addresses do not conflict within a local network.  
+            - These mechanisms simplify network management and ensure proper addressing for all devices.
+
+-  ARP (Address Resolution Protocol) & Reverse-ARP
+
+    In a computer network, each device has two types of addresses:  
+    - Physical Address (MAC): Permanent and fixed for a device, does not change across networks.  
+    - Logical Address (IP): Transient, changes when the device moves to a different network.  
+
+    To transmit data, the Data Link layer requires the physical/MAC address, but the Network layer usually only knows the IP address.  
+
+    -   ARP (Address Resolution Protocol)
+
+        ARP is used to map a known IP address to a MAC address.  
+
+        Process:
+        1. The sender broadcasts an ARP request to its neighbors asking for the MAC of a target IP.  
+        2. ARP request contains:  
+            - Sender IP address  
+            - Sender MAC address  
+            - Destination MAC address (all 0s initially)  
+            - Destination IP address  
+        3. The device with the matching IP responds with its MAC address (unicast reply to sender).  
+        4. Other devices ignore the request.  
+
+        Key points:  
+        - Allows devices to learn the MAC address of the next-hop device.  
+        - Works only within the same local network/broadcast domain.  
+
+    -   Reverse ARP (RARP) (Mainly replaced by DHCP Server Now)
+
+        RARP is used to obtain the IP address from a known MAC address.  
+
+        Use case:  
+        - When a device does not have a stored IP address (e.g., newly booted or diskless machine).  
+
+        Process:
+        1. The device sends a RARP broadcast packet containing its own MAC address in both sender and receiver fields.  
+        2. A RARP server on the network maintains a MAC-to-IP mapping table.  
+        3. The RARP server finds the matching entry and responds with the device's IP address.  
+
+        Key points:  
+        - Helps devices learn their IP address dynamically.  
+        - Requires a dedicated RARP server within the local network.  
+        - Mostly obsolete today, replaced by DHCP, which provides IP along with subnet mask, gateway, and DNS.
+
+-   IPv4 vs IPv6
+
+    IPv4 (Internet Protocol Version 4) and IPv6 (Internet Protocol Version 6) are versions of the Internet Protocol. IPv6 is the newer version designed to overcome the limitations of IPv4, offering greater efficiency, security, and address space.
+
+    -   Key Differences
+
+    | Feature | IPv4 | IPv6 |
+    |---------|------|------|
+    | Address Length | 32-bit | 128-bit |
+    | Address Configuration | Supports Manual and DHCP | Supports Auto and renumbering configuration |
+    | End-to-End Connection Integrity | Unachievable | Achievable |
+    | Address Space | 4.29 × 10⁹ addresses | 3.4 × 10³⁸ addresses |
+    | Security | Dependent on applications | IPSEC is inbuilt |
+    | Address Representation | Decimal | Hexadecimal |
+    | Fragmentation | Performed by sender and forwarding routers | Performed only by sender |
+    | Packet Flow Identification | Not available | Available using Flow Label field in the header |
+    | Checksum Field | Available | Not available |
+    | Message Transmission | Broadcast | Multicast and Anycast |
+    | Encryption & Authentication | Not provided | Provided |
+
+    **Summary:**  
+    IPv6 solves the address exhaustion problem of IPv4, improves security with built-in IPSEC, simplifies packet handling, and provides better support for modern network services.
+
+
+
+
+
+
+
 
