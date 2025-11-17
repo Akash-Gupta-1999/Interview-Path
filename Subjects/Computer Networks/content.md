@@ -909,14 +909,14 @@ Each layer has a specific role and communicates only with the layer above and be
     - Network Address: Identifies the network.  
     - Subnet Mask: 32-bit binary used to determine network ID by ANDing with IP address.  
 
-    # Example:
+     Example:
     - IP: `172.16.21.23/25`  
     - IP in binary: `10101100.00010000.00010101.00010111`  
     - Subnet mask (/25): `11111111.11111111.11111111.10000000` = 255.255.255.128  
     - Network ID: `172.16.21.0`  
     - Usable hosts: 2^(32-25) - 2 = 126  
 
-    # Why Subnet?
+     Why Subnet?
     - Improves security between subnets.  
     - Allows prioritization of some networks.  
     - Easier maintenance for smaller networks.  
@@ -934,7 +934,7 @@ Each layer has a specific role and communicates only with the layer above and be
     2. Networks must be of equal size (power of 2).  
     3. The first IP must be divisible by the total size of the supernet.
 
-    # Example:
+     Example:
 
     Four contiguous /24 networks:  
     - N1: 200.1.0.0/24  
@@ -1020,8 +1020,881 @@ Each layer has a specific role and communicates only with the layer above and be
     | Message Transmission | Broadcast | Multicast and Anycast |
     | Encryption & Authentication | Not provided | Provided |
 
-    **Summary:**  
+    Summary:  
     IPv6 solves the address exhaustion problem of IPv4, improves security with built-in IPSEC, simplifies packet handling, and provides better support for modern network services.
+
+-   Transport Layer
+    The Transport Layer lies just above the Network Layer and is responsible for end-to-end communication between applications on different hosts.  
+
+    Unlike the Network Layer (hop-to-hop delivery), the Transport Layer provides process-to-process delivery using ports.
+
+    The unit of transmission at this layer is called a segment.
+
+    Common Transport Layer protocols:
+    - TCP – Transmission Control Protocol  
+    - UDP – User Datagram Protocol  
+    - DCCP – Datagram Congestion Control Protocol  
+
+    Transport Layer ensures:
+    - Reliable delivery (in TCP)
+    - Error detection and correction
+    - Flow control
+    - Congestion control
+    - Proper sequencing and reassembly of data
+
+    1. Working of Transport Layer
+
+    At Sender Side
+    - Receives data from Application Layer.
+    - Performs segmentation.
+    - Implements flow control and error control.
+    - Adds:
+        - Source port number  
+        - Destination port number  
+        - Forwards segments to the Network Layer.
+
+    Note:  
+        Sender must know the destination port number of the receiver's application.  
+        Examples:
+        - HTTP → 80
+        - HTTPS → 443
+        - DNS → 53
+        - FTP → 21/20
+
+        These ports are usually default or configured manually.
+
+    At Receiver Side
+    - Reads the port number from the segment header.
+    - Delivers data to the correct application/process.
+    - Performs sequencing and reassembly of segments.
+
+    ---
+
+    2. Important Responsibilities of the Transport Layer
+
+        1. Process-to-Process Delivery
+        - Uses port numbers (16-bit values) to identify the correct process.
+        - Just like:
+            - Data Link Layer uses MAC address
+            - Network Layer uses IP address
+            - Transport Layer uses Port Number
+
+        Example:  
+        On a single device, a browser, a game, and a downloader can all use the network simultaneously—ports differentiate them.
+
+        ---
+
+        2. End-to-End Connection
+        - TCP: Reliable, connection-oriented, uses 3-way handshake.
+        - UDP: Unreliable, connectionless, used where speed matters more than accuracy (e.g., video streaming, VoIP).
+        - Ensures data is delivered between two endpoints reliably (TCP) or best-effort (UDP).
+
+        ---
+
+        3. Multiplexing & Demultiplexing
+        - Multiplexing:  
+        Transport Layer accepts data from multiple applications, adds port numbers, and sends them to the Network Layer.
+
+        - Demultiplexing:  
+        Receiver’s Transport Layer uses destination port number to give data to the correct application.
+
+        Example:  
+        Port 80 → browser  
+        Port 25 → email client  
+        Port 443 → secure web traffic  
+
+        ---
+
+        4. Congestion Control
+        Congestion occurs when too many sources send data causing router buffer overflow.
+
+        Transport Layer handles this using:
+        - Open-loop techniques (prevent congestion)  
+        - Closed-loop techniques (remove congestion once it happens)
+
+        TCP congestion control techniques:
+        - AIMD – Additive Increase Multiplicative Decrease  
+        - Leaky Bucket  
+        - Token Bucket  
+        - Slow Start, Fast Retransmit, Fast Recovery
+
+        ---
+
+        5. Data Integrity & Error Control
+        Ensures received data is not corrupted by:
+        - Computing checksums
+        - Using ACK (Acknowledgement)
+        - Using NACK (Negative Acknowledgement)
+        - Retransmitting lost or damaged segments
+
+        ---
+
+        6. Flow Control
+        Prevents a fast sender from overwhelming a slow receiver.
+
+        TCP uses:
+        - Sliding Window Protocol
+        - Receiver advertises a window size telling how much data it can handle.
+
+        Example:  
+        If receiver window = 10 KB → sender can send up to that limit before waiting.
+
+    ---
+
+    Summary
+    Transport Layer provides:
+    - End-to-end communication  
+    - Port-based process delivery  
+    - Segmentation & reassembly  
+    - Reliability (TCP)  
+    - Fast, best-effort delivery (UDP)  
+    - Congestion, error & flow control  
+
+    It is essential for enabling multiple applications to use the network simultaneously and reliably.
+
+    -   Sockets
+        A socket is a combination of:
+        - IP Address (identifies the device)
+        - Port Number (identifies the application/process)
+        - Protocol (TCP/UDP)
+
+    Together they form a communication endpoint used by applications to send/receive data.
+
+    -    Socket Definition
+    Socket = IP Address + Port Number + Protocol
+
+    Example:
+    (192.168.1.10 , 5000 , TCP)
+
+    This uniquely identifies a process on a specific host.
+
+    -   Full Connection Identification (Socket Pair)
+    For TCP connections, a complete communication stream is uniquely identified by:
+    (Source IP, Source Port, Destination IP, Destination Port)
+
+    Example:
+    (192.168.1.5, 34000, 142.250.182.14, 443)
+    
+    -   Types of Sockets
+        1. TCP Socket (Connection-Oriented)
+        - Reliable  
+        - Uses handshake (3-way)
+        - Ensures ordering, retransmission, congestion control
+
+        Common TCP Socket Functions
+        | Function | Purpose |
+        |---------|---------|
+        | `socket()` | Creates a socket |
+        | `bind()` | Assigns IP + port to socket |
+        | `listen()` | Marks socket as passive (server waiting for connections) |
+        | `accept()` | Accepts an incoming client connection |
+        | `connect()` | Client connects to server |
+        | `send()` / `write()` | Sends data |
+        | `recv()` / `read()` | Receives data |
+        | `close()` | Closes socket |
+
+        ---
+
+        2. UDP Socket (Connectionless)
+        - Fast  
+        - No handshake  
+        - No guarantee or ordering  
+        - Used for DNS, video streaming, gaming, VoIP, etc.
+
+        Common UDP Socket Functions
+        | Function | Purpose |
+        |---------|---------|
+        | `socket()` | Creates a socket |
+        | `bind()` | Assigns IP + port (optional for clients) |
+        | `sendto()` | Sends datagram to a specific address |
+        | `recvfrom()` | Receives datagram from any address |
+        | `close()` | Closes socket |
+
+        No `connect()`, `listen()`, or `accept()` in UDP because it is connectionless.
+
+    -   SummaryS
+        - Socket is the endpoint for communication created at the Transport Layer.  
+        - TCP uses connect(), listen(), accept() because it is connection-oriented.  
+        - UDP uses sendto(), recvfrom() because it is connectionless.  
+        - A socket pair uniquely identifies one TCP connection.
+
+-   TCP vs UDP
+
+    -   TCP (Transmission Control Protocol)
+
+        TCP is a connection-oriented, stateful, and reliable transport-layer protocol.  
+        Before any data is exchanged, TCP requires a connection to be established using a 3-way handshake.
+
+        🔹 TCP 3-Way Handshake
+
+        1. SYN →  
+        Sender asks to start a connection by sending a segment with SYN flag and an initial sequence number.
+
+        2. SYN + ACK →  
+        Receiver replies acknowledging sender’s SYN and sends its own SYN.
+
+        3. ACK →  
+        Sender acknowledges the receiver’s SYN, and the connection is established.
+
+        This handshake ensures:
+        - Both sides agree on initial sequence numbers  
+        - A reliable communication pipe is created  
+        - Connection state is tracked by both devices  
+
+    -   UDP (User Datagram Protocol)
+
+    UDP is connectionless, stateless, and focuses on speed over reliability.
+
+    - No handshake  
+    - No guarantee of delivery  
+    - No retransmission  
+    - No ordering  
+    - Low overhead  
+
+    Used where slight data loss is acceptable and speed is critical:
+    - Video streaming  
+    - Voice calls (VoIP)  
+    - Online multiplayer games  
+    - DNS requests  
+
+    -   Detailed Differences Between TCP & UDP
+
+    | Feature | TCP | UDP |
+    |--------|-----|-----|
+    | Connection Type | Connection-oriented (3-way handshake) | Connectionless (no handshake) |
+    | Reliability | Reliable, guaranteed delivery | Unreliable, no delivery guarantee |
+    | Error Checking | Extensive (ACKs, flow control, retransmissions) | Basic checksum only |
+    | Ordering | Ensures in-order delivery | No ordering; application must handle it |
+    | Speed | Slower due to overhead | Faster and lightweight |
+    | Retransmission | Yes, lost packets are resent | No retransmission |
+    | Header Size | 20 bytes | 8 bytes |
+    | Protocol Weight | Heavyweight | Lightweight |
+    | Typical Uses | HTTP, HTTPS, FTP, SMTP, Telnet | DNS, DHCP, TFTP, SNMP, RIP, VoIP |
+
+    -   Summary
+        - TCP → Reliable, ordered, connection-based, slower, heavy.  
+        - UDP → Fast, lightweight, unreliable, unordered, used in real-time systems.
+
+        Suitable choice depends on whether reliability or speed is more important.
+
+-   Introduction to Routing Algorithms
+
+    Routing is the process of selecting an optimal path for data packets to travel from source to destination across a network.  
+    It is the responsibility of the Network Layer (Layer 3).
+
+    Routing decisions are usually based on:
+    - Hop count  
+    - Link cost  
+    - Bandwidth  
+    - Delay  
+    - Reliability  
+
+    Routing protocols help routers share information and build routing tables.
+
+    -   Types of Routing ![alt text](image-15.png)
+
+    Routing is classified into three main types:
+
+        -   Static Routing
+            Static routing requires the administrator to manually configure routes on each router.
+
+            ✔ Advantages
+            - No CPU overhead on routers  
+            - More secure (only admin controls routes)  
+            - No bandwidth consumption for routing updates  
+
+            ✘ Disadvantages
+            - Not suitable for large networks  
+            - Manual configuration is time-consuming  
+            - Admin must know entire network topology  
+
+            Example Configuration (Cisco)
+            R3(config) ip route 192.168.10.0 255.255.255.0 172.16.10.2
+            R3(config) ip route 192.168.20.0 255.255.255.0 172.16.10.6
+
+        -    Default Routing
+
+            All unknown packets are forwarded to one fixed next-hop router.  
+            Used by stub routers — routers that have only one way to reach external networks.
+
+            Example
+            R1(config) ip route 0.0.0.0 0.0.0.0 172.16.10.5
+
+        -   Dynamic Routing
+
+            Routers automatically:
+            - Learn routes  
+            - Exchange routing tables  
+            - Adapt when network topology changes  
+
+            Examples: RIP, OSPF, EIGRP, IS-IS, BGP
+
+            ✔ Advantages
+            - Auto-adjusts to changes  
+            - Best path selection  
+
+            ✘ Disadvantages
+            - Consumes bandwidth  
+            - Less secure compared to static routing  
+
+    -   Classes of Routing Protocols
+
+        Routing protocols are divided into three categories:
+
+            1. Distance Vector Routing Protocols (Bellman Ford : Low Convergence)
+
+                Select best path based on hop count.  
+                Example → RIP
+
+                Features
+                - Periodic updates  
+                - Broadcast routing information  
+                - Full routing tables exchanged  
+                - “Routing by rumor” — trusts neighbors blindly  
+
+                Disadvantages
+                - High bandwidth usage  
+                - Security risks  
+                - Slow convergence  
+
+            2. Link-State Routing Protocols (Dijkstra : High Covergence)
+
+                Routers maintain a full map of the network and compute shortest paths using Dijkstra’s SPF algorithm.  
+                Example → OSPF, IS-IS
+
+                Features
+                - Hello (keep-alive) messages  
+                - Triggered updates (only when changes occur)  
+                - Partial updates (not full tables)  
+
+                Tables Maintained
+                - Neighbor Table — directly connected routers  
+                - Topology Table — entire network map (best + backup routes)  
+                - Routing Table — best routes only  
+
+                Advantages
+                - Faster convergence  
+                - Less bandwidth usage  
+                - More scalable  
+
+            3. Advanced Distance Vector (Hybrid Protocols)
+
+                Use features of both distance-vector and link-state protocols.  
+                Example → EIGRP
+
+                Behaves like:
+                - Link-state: uses Hello packets, forms adjacencies  
+                - Distance vector: learns routes from neighbors  
+
+    -   Important Routing Protocols
+
+        Below are popular routing protocols used in different scopes:
+            -   Interior Gateway Protocol (IGP)
+                Used within a single autonomous system (AS).
+
+                Examples:
+                    RIP
+                    - Distance vector  
+                    - Max hop count = 15  
+                    - Periodic updates every 30 sec  
+                    - Simple but outdated  
+
+                    OSPF
+                    - Link-state  
+                    - Uses areas for scalability  
+                    - SPF algorithm  
+
+                    EIGRP
+                    - Hybrid protocol  
+                    - Cisco proprietary  
+                    - Uses DUAL algorithm (loop-free, fast convergence)  
+
+            -   Exterior Gateway Protocol (EGP)
+                Used between autonomous systems (Internet-level).
+
+                Example:
+                BGP (Border Gateway Protocol)
+                - Path vector protocol  
+                - Backbone of the Internet  
+                - Uses AS-paths instead of hop count  
+                - Supports full decentralization  
+
+            -   IS-IS (Intermediate System – Intermediate System)
+                - Link-state protocol used in large service provider networks  
+                - Similar to OSPF  
+                - Originally designed for OSI networks  
+
+
+    -   Summary Table of Protocols
+
+    | Protocol | Type | Example Use |
+    |---------|------|--------------|
+    | RIP | Distance Vector | Small networks |
+    | OSPF | Link-State | Enterprise networks |
+    | EIGRP | Hybrid | Cisco networks |
+    | BGP | Path Vector | Internet routing |
+    | IS-IS | Link-State | ISP backbone networks |
+
+    -   Final Notes
+
+        - Routing enables data to travel across multiple networks.
+        - Dynamic routing is preferred for medium–large networks.
+        - Link-state protocols (OSPF/IS-IS) scale far better than distance-vector protocols like RIP.
+        - BGP is the only protocol used for global Internet routing between ISPs.
+    
+    -   Types of Information Transfer
+        -   Unicast
+            -   One-to-one communication.
+            -   Involves a single sender and a single receiver.
+                Example: Device with IP 10.1.2.0 sends data to device 20.12.4.2.
+            -   Most common form of communication in networks.
+
+        -   Broadcast
+            Broadcasting refers to one-to-all data transmission. It is of two types:
+            -   Limited Broadcast
+                -   Used to send packets to all devices within the same local network.
+                -   Destination address used: 255.255.255.255 (all bits set to 1).
+                -   Ensures the message reaches all hosts on the local network.
+            -   Direct Broadcast
+                -   Used when a device in one network wants to broadcast to all devices in another network.
+                -   Achieved by setting all Host ID bits of the destination network to 1.
+                -   Used in applications such as TV network distribution for audio/video.
+                -   ARP uses a broadcast mechanism to resolve IP → MAC addresses.
+
+        -   Multicast
+            -   One or more senders communicate with one or more receivers.
+            -   Falls between unicast (1:1) and broadcast (1:all).
+            -   Server sends single copies of data that routers replicate and forward only to interested hosts.
+            -   Requires protocols like:
+                IGMP (Internet Group Management Protocol)
+                Multicast Routing Protocols
+            -   Classful addressing: Class D reserved for multicast groups.
+
+        -   Anycast
+            -   One-to-nearest communication.
+            -   A single sender communicates with the closest receiver (in routing topology).
+            -   Same IP address is advertised by multiple nodes.
+            -   Routing decision is based on:
+                -   Server health
+                -   Server capacity
+                -   Network distance/cost
+            -   Helps in:
+                -   Faster content delivery
+                -   Load balancing
+
+    -   Factors Affecting Link Cost in Routing Algorithms
+        Costs are assigned to links based on several metrics:
+        -   Bandwidth
+            Higher bandwidth generally means lower cost.
+        -   Network Delay
+            Includes propagation + transmission delays.
+        -   Hop Count
+            Lower hop count = more efficient route.
+        -   Path Cost
+            Different paths incur different costs (overall efficiency matters).
+        -   Load
+            High congestion on a link increases its cost.
+        -   Maximum Transmission Unit (MTU)
+            Larger MTU allows bigger packets, affecting routing decisions.
+
+    -   Goals of Routing Algorithms
+        -   Routing algorithms aim to:
+        -   Deliver packets correctly
+        -   Utilize bandwidth efficiently
+        -   Avoid starving any node (fairness)
+        -   Handle network changes with fast convergence, such as:
+            -   Router going down
+            -   Link failure
+            -   Change in link costs
+            -   Addition of a new router
+
+-   Routing Protocols (DVR & LSR)
+    
+    -   Distance Vector Routing (DVR)
+        -   Overview
+            -   DVR requires routers to periodically inform neighbors of topology changes.
+            -   Historically used in ARPANET.
+            -   Based on the Bellman-Ford algorithm.
+
+        -   Bellman-Ford Basics
+            -   Each router maintains a Distance Vector (DV) table with the distance to all destinations.
+            -   Distances are computed using neighbors’ DV tables.
+
+        -   Information Stored by a DV Router
+            -   Router ID
+            -   Link cost for each connected link (static or dynamic)
+            -   Intermediate hops
+
+        -   Initialization
+            -   Distance to itself = 0
+            -   Distance to all other routers = ∞ (infinity)
+
+        -   Distance Vector Algorithm
+            -   Router sends its DV to neighbors.
+            -   Router receives and stores the DV from neighbors.
+            -   Router recalculates DV when:
+                -   New DV from a neighbor contains changed info.
+                -   A link to a neighbor goes down.
+            -   Bellman-Ford Equation
+                Dx(y) = min { C(x,v) + Dv(y) }
+                Where:
+                Dx(y) = cost from x to y
+                C(x,v) = cost from x to neighbor v
+                Dv(y) = neighbor v’s distance to y
+            -   Periodic Operation
+                -   Routers periodically send DV updates.
+                -   When router x receives DV from v, it:
+                    -   Saves neighbor v's DV
+                    -   Updates its own DV using the Bellman-Ford equation
+
+            -   Example (Routers X, Y, Z) ![alt text](image-16.png) ![alt text](image-17.png)
+                Each router shares its table with neighbors.
+                X calculates cost to Z using Y as an intermediate hop.
+                If the path X → Y → Z is cheaper, X updates its DV.
+                Same happens for Z.
+                Finally, all routers update their routing tables.
+
+            -   Advantages of DVR
+                -   Simple to configure and maintain.
+
+            -   Disadvantages of DVR
+                -   Slow convergence.
+                -   Prone to count-to-infinity routing loops.
+                -   Generates more control traffic since updates are periodic.
+                -   Larger routing tables in large networks.
+                -   Causes WAN congestion.
+            
+            -   Key Notes
+                -   DVR uses UDP for transporting routing info.
+                -   RIP is the practical implementation of DVR.
+
+            -   Count-to-Infinity Problem ![alt text](image-18.png)
+                How it happens
+                A, B, C know routes to each other.
+                Link B–C fails → B removes C.
+                A still advertises C at cost 2 to B.
+                B updates route: B → A → C (cost 3).
+                A updates route: A → B → C (cost 4).
+                Costs increase endlessly → count-to-infinity.
+
+            -   Solutions to Count-to-Infinity
+                1. Route Poisoning
+                    -   Failed routes are advertised with infinite metric.
+                    -   In RIP, infinity = 16.
+                    -   Helps routers quickly remove unreachable routes.
+
+                2. Split Horizon
+                    -   Do not advertise a route back out the interface from which it was learned.
+                    -   Prevents simple loops (A → B → A).
+
+                3. Split Horizon with Poison Reverse
+                    Combines both:
+                    -   Advertise route back with infinite cost.
+                    Used in RIP for loop prevention.
+
+                4. Holddown Timers
+                    -   Activated when a route goes down.
+                    -   Router ignores updates for that route until:
+                        -   Timer expires, or
+                        -   Update comes from the connected router.
+
+        -   RIP (Routing Information Protocol)
+            Important Characteristics
+            -   Uses hop count metric.
+            -   Maximum hop count = 15 (16 = infinity).
+            -   Sends updates every 30 seconds.
+            -   Implements: Split Horizon, Poison Reverse, Holddown timers
+
+    -   Link State Routing (LSR)
+        Overview: 
+        -   A dynamic routing algorithm (updates on topology change).
+        -   Based on Dijkstra’s shortest path algorithm.
+        -   Each router:
+            -   Builds a complete network topology.
+            -   Calculates shortest paths independently.
+        -   Phases of LSR
+            -   (A) Reliable Flooding
+                -   Each router knows hop-costs to directly connected neighbors.
+                -   It advertises this info via Link-State Advertisements (LSAs).
+                -   LSA Contains: Sequence number, Router ID, Neighbor hop-cost
+                -   LSA Handling Procedure
+                    -   Router keeps an LSA table.
+                    -   On receiving an LSA:
+                        -   Compare with stored sequence number.
+                        -   If newer → update table & flood to neighbors.
+
+            -   (B) Route Calculation
+                -   After all LSAs are flooded, every router knows the full topology.
+                -   Each router runs Dijkstra’s Algorithm to compute:
+                    -   Shortest path to every router
+                    -   Next-hop information
+                -   OSPF (Open Shortest Path First)
+                    -   Practical implementation of LSR.
+                    -   Supports: Fast convergence, Hierarchical routing, Efficient link-state updates
+
+-   Application Layer
+    -   The Application Layer is the topmost layer of the OSI Model.
+    -   It is where user applications and high-level protocols operate.
+    -   When a user browses the internet, the following occurs:
+        -   The browser generates Application Data with specific application headers.
+        -   The Transport Layer breaks data into segments and adds a TCP header.
+        -   The Network Layer adds the destination IP address.
+        -   The Data Link Layer sends frames to the router using MAC addresses.
+        -   The MAC address of the router is obtained using ARP (Address Resolution Protocol).
+        -   Switches read the MAC header to forward frames.
+        -   Routers on the internet operate using:
+            -   Network Layer, Data Link Layer, Physical Layer
+        -   When data reaches the web server, the TCP header helps reconstruct the original data stream.
+
+    -   Protocols in the Application Layer
+        1. HTTP (Hyper Text Transfer Protocol)
+            -   A request–response protocol used to fetch web content (HTML, JS, images, etc.) in a client-server architecture.
+            -   Uses TCP at the transport layer.
+            -   HTTP Methods:
+                GET – Retrieve data (no side effects).
+                HEAD – Retrieve only headers.
+                POST – Send data to the server (forms, user data).
+                DELETE – Delete the specified resource.
+                OPTIONS – Get supported HTTP methods.
+                Port: 80 (sometimes 8080)
+
+        2. HTTPS (HTTP Secure)
+            -   Secure version of HTTP using TLS (formerly SSL).
+            -   Prevents eavesdropping, tampering & MITM attacks.
+            -   Port: Same as HTTP (commonly 443 in practice).
+
+        3. TELNET
+            -   Stands for TELecommunications NETwork.
+            -   Terminal emulation protocol allowing remote access to another machine.
+            -   Not secure (no encryption). Replaced by SSH.
+            -   Port: 23
+
+        4. SSH (Secure Shell)
+            -   Secure version of Telnet with encryption.
+            -   Used for remote administration, file access, tunneling.
+            -   Port: 22
+
+        5. FTP (File Transfer Protocol)
+            -   Transfers files reliably between remote machines.
+            -   Uses two ports:
+                20 – FTP Data
+                21 – FTP Control
+        
+        6. SMTP (Simple Mail Transfer Protocol)
+            -   Used for sending emails.
+            -   Uses TCP.
+            -   Works with MTA (Mail Transfer Agent) through Store and Forward.
+            -   Port: 25
+
+        7. DNS (Domain Name System)
+            -   Converts domain names → IP addresses.
+            -   e.g., www.example.com → 198.105.232.4
+            -   Clients query DNS servers to obtain the IP of requested domains.
+            -   Port: 53
+
+        8. DHCP (Dynamic Host Configuration Protocol)
+            -   Provides dynamic IP addressing to devices in a network.
+            -   DHCP server maintains a pool of IP addresses and leases them temporarily.
+            -   Needed because devices frequently join/leave the network.
+            -   Ports: 67 (server), 68 (client)
+
+-   Domain Name System (DNS)
+    -   Introduction
+        -   We are fortunate to live in the age of the internet, whose power and utility we often take for granted. We open a browser, type a URL or a Google search query, and instantly get thousands of results which we can browse, follow links, and explore — a process commonly known as web surfing.
+        -   But have you ever wondered what happens under the hood?
+        -   In this article, we walk through everything that happens from the moment you enter a URL in the browser to the moment a webpage loads.
+
+    -   Entering the URL
+        -   We use browsers (Chrome, Firefox, Edge, etc.) to surf the internet. Each browser has an address bar where we type the URL of the website we want to visit.
+        -   When we enter a URL such as www.google.com or youtube.com and press Enter, the landing page loads shortly afterward.
+        -   However:
+            -   Computers cannot understand human-language addresses.
+            -   Human-readable URLs have variations (uppercase/lowercase, typos, etc.).
+            -   Networks use IP addresses (IPv4/IPv6) for actual routing.
+            -   IPs are numeric and hard to remember.
+        -   To bridge this gap, we need a mechanism that maps domain names → IP addresses.
+        -   This is where DNS comes into play.
+        -   Whenever you type a domain name in the browser:
+            -   The system must get the IP address for that domain.
+            -   Only after the browser receives the IP can it request data from the server.
+
+    -   DNS Lookup
+        DNS lookups add overhead, and to optimize performance, systems maintain a DNS cache. Before querying a DNS server, the browser checks the system’s DNS cache.
+
+        You can view the cache on Windows using: ipconfig /displaydns
+
+        If no cached entry is found, the system queries an external DNS server. DNS server IPs can be:
+            -   Provided by ISP
+            -   Public DNS such as:
+                -   Google: 8.8.8.8 / 8.8.4.4
+                -   OpenDNS: 208.67.222.222 / 208.67.220.220
+            -   DNS queries typically use UDP because:
+                -   DNS requests are small (≤ 512 bytes)
+                -   UDP is faster and lightweight
+            -   DNS uses port 53
+        
+    -   DNS Resolution (How DNS Finds the IP)
+        Let’s resolve www.youtube.com.
+
+        DNS resolution works right to left:
+        -   .com
+        -   youtube
+        -   www
+
+        -   Steps ![alt text](image-19.png) ![alt text](image-20.png)
+            -   Browser queries a Root DNS Server
+                -   Root DNS contains addresses of Top-Level Domain (TLD) servers (.com, .org, .gov, etc.).
+                -   Since we need .com, it returns the address of a .com TLD server.
+            -   Query to TLD (.com) Server
+                -   The .com server checks its database for domains matching youtube.
+                -   It returns the authoritative name servers for YouTube, e.g.,
+                -   ns1.google.com to ns4.google.com.
+            -   Query to Authoritative Name Server
+                -   We query one of Google's name servers.
+                -   It returns the IP address of a geographically closest YouTube server.
+
+        -   This hierarchical process continues until the final IP is returned.
+
+    -   TCP Connection & HTTP Request
+        -   Once the IP is found, the browser establishes a TCP connection using the 3-way handshake:
+            -   SYN → Client asks to open a connection
+            -   SYN/ACK → Server acknowledges
+            -   ACK → Client confirms
+        -   After the connection is established, the browser sends an HTTP request to the server.
+        -   The server replies with an HTTP response, containing: HTML, CSS, JavaScript, images, JSON data and more.
+        -   The browser then parses and renders these to display the webpage.
+
+    -   Sub-URL Resolution
+        Example sub-URLs: 
+            geeksforgeeks.org/data-structure-and-algorithms/
+            geeksforgeeks.org/users/
+
+        -   How does the server serve different pages?
+            -   Historically, there were two approaches:
+                1. Separate HTML Files (Old Approach)
+                    -   Servers had a fixed folder structure: index.html, feed.html, profile.html etc.
+                    -   When you visited:
+                        -   abc.com/ → serves index.html
+                        -   abc.com/feed.html → serves feed.html
+                    -   This approach does not scale, especially for millions of user-specific pages such as:
+                        -   abc.com/profile/levi.html
+                        -   abc.com/profile/eren.html
+                        -   abc.com/profile/erwin.html
+
+                2. Single Bundle File + API Endpoints (Modern Approach)
+                    -   Modern websites use:
+                        -   Single Page Applications (SPAs)
+                        -   Frameworks: React, Angular, Vue
+                        -   Backend APIs: Node.js, Django, Express
+                    -   How it works:
+                        -   A single JS bundle is downloaded.
+                        -   It contains the base HTML shell.
+                        -   When navigating to pages:
+                            -   Browser makes API calls
+                            -   Data is injected dynamically into the page
+                        -   This approach is scalable and efficient.
+
+-   DHCP (Dynamic Host Configuration Protocol)
+    -   Introduction
+        -   DHCP is an application layer protocol used to automatically provide network configuration parameters to clients, such as:
+            -   Subnet Mask (Option 1 — e.g., 255.255.255.0)
+            -   Router/Gateway Address (Option 3 — e.g., 192.168.1.1)
+            -   DNS Server Address (Option 6 — e.g., 8.8.8.8)
+            -   Vendor Class Identifier (Option 43 — e.g., 'unifi' = 192.168.1.9)
+
+        -   DHCP follows a client–server model and operates using the DORA process:
+            -   Discover, Offer, Request, ACK
+        
+        -   It uses: UDP port 67 (server), UDP port 68 (client)
+
+        -   Although DORA consists of 4 main steps, DHCP actually defines 8 message types.
+    
+    -   DHCP Message Types
+        1. DHCP Discover
+            -   First message sent by the client.
+            -   Used to find available DHCP servers on the network.
+            -   Broadcast message.
+            -   Size: ~342 or 576 bytes.
+            -   Fields:
+                -   Source MAC: client’s MAC
+                -   Destination MAC: FF:FF:FF:FF:FF:FF
+                -   Source IP: 0.0.0.0 (client has no IP yet)
+                -   Destination IP: 255.255.255.255 (broadcast)
+
+        2. DHCP Offer
+            -   Server replies with an offered IP address + configuration.
+            -   Broadcast by the server.
+            -   Size: ~342 bytes.
+            -   If multiple servers reply, client accepts the first OFFER.
+            -   Includes:
+                -   Server ID
+                -   Offered IP
+                -   Lease duration
+            -   Fields:
+                -   Source IP: DHCP server IP
+                -   Destination IP: 255.255.255.255
+                -   Source MAC: server MAC
+                -   Destination MAC: FF:FF:FF:FF:FF:FF
+
+        3. DHCP Request
+            -   Sent by client to accept a DHCP Offer.
+            -   Client first sends a gratuitous ARP to check if the offered IP is already in use.
+            -   If no ARP reply → client broadcasts DHCP Request.
+            -   Fields:
+                -   Source IP: 0.0.0.0
+                -   Destination IP: 255.255.255.255
+                -   Source MAC: client MAC
+                -   Destination MAC: broadcast MAC
+
+        4. DHCP ACK (Acknowledgement)
+            -   Server confirms the assignment.
+            -   Binds the IP address to the client with the lease time.
+            -   After this message, the client starts using the assigned IP.
+            -   Fields:
+                -   Source IP: server IP
+                -   Destination IP: broadcast IP
+                -   Source MAC: server MAC
+                -   Destination MAC: broadcast
+
+        5. DHCP NAK (Negative Acknowledgement)
+            -   Sent by the server if:
+                -   Client requests an invalid IP
+                -   Requested IP is outside the server’s configured scope
+                -   IP pool is empty
+            -   Client must restart the DHCP process.
+
+        6. DHCP Decline
+            -   Client sends this if the offered IP is already in use.
+            -   Sent when the gratuitous ARP receives a reply from another host.
+
+        7. DHCP Release
+            -   Client sends this to relinquish its IP address.
+            -   Tells the server to free the lease early.
+
+        8. DHCP Inform
+            -   Used when the client already has a manually assigned IP.
+            -   Client requests additional network parameters (e.g., domain name).
+            -   Server responds with DHCP ACK (unicast), without assigning a new IP.
+            -   Note on DHCP Relay : If the DHCP server is on a different network, a DHCP relay agent can forward the messages, allowing unicast communication across subnets.
+
+    -   Advantages of DHCP
+        -   Centralized IP address management
+        -   Easy addition of new clients
+        -   Efficient reuse of IP addresses
+        -   Reconfiguration possible on server without touching clients
+        -   Simplifies network administration
+        -   Automated handling of users and IP allocations
+
+    -   Disadvantages of DHCP
+        -   IP conflicts can occur (rare but possible if misconfigured)
+
+
+
+
+
+
+
+
 
 
 
