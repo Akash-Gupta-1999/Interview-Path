@@ -1,1 +1,4 @@
 -   Computer Networks
+-   Operating System
+-   SQL/DBMS
+-   OOPS
