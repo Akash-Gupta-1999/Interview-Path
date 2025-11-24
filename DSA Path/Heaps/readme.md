@@ -22,5 +22,5 @@
     5.  Find Median : https://leetcode.com/problems/find-median-from-data-stream/description/
         -   Normal problem
         -   A twist if number only range from 0 to 100
-        -   99% lies in o to 100 except 1%
+        -   99% lies in 0 to 100 except 1%
     6.  top k frequent elements : https://leetcode.com/problems/top-k-frequent-elements/description/

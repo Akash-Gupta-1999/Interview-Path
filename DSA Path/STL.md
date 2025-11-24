@@ -35,8 +35,7 @@
     -   Insert -> Takes constant time if insertion is at the end, if not at the end it will be O(N)
         -   v.insert(v.begin(), 300) -> insert 300 at position v.begin()
         -   v.insert(v.begin()+1,2,10) -> insert 2 10's (10,10) at position v.begin()+1
-        -   vector<int> copy(2,50) -> v.insert(v.begin(), copy.begin(), copy.end()) -> it inserts copy vector atrting from position 
-        v.begin()
+        -   vector<int> copy(2,50) -> v.insert(v.begin(), copy.begin(), copy.end()) -> it inserts copy vector starting from position v.begin()
 
     -   v.pop_back() -> removes the last element : Takes constant Time
     -   v1.swap(v2) -> swaps the vector values
@@ -48,7 +47,7 @@
 
     -   ls.push_back(2) -> pushes element at the end - O(1)
     -   ls.emplace_back(4) -> same as in Vectors - O(1)
-    -   ls. push_front(3) -> Pushes at the front - O(1)
+    -   ls.push_front(3) -> Pushes at the front - O(1)
     -   ls.emplace_front(3) -> same as in Vectors - O(1)
 
     NOTE: begin, end, clear, insert, size, swap : same as it works in Vectors.
@@ -58,7 +57,7 @@
     Declare : deque<int> dq;
 
     -   dq.push_back()
-    -   dq.emplac_back()
+    -   dq.emplace_back()
     -   dq.push_front()
     -   dq.emplace_front()
     -   dq.pop_back()
@@ -75,7 +74,7 @@
 
     -   st.push() : Pushes at back
     -   st.emplace()
-    -   st.top()
+    -   st.pop()
     -   st.top()
     -   st.size()
     -   st.empty()
@@ -177,7 +176,7 @@
 --  Algorithms
 
     -   Sorting
-        -   Increasing Order : sort(a,a+n); sort(v.begib(),v.end()); 
+        -   Increasing Order : sort(a,a+n); sort(v.begin(),v.end()); 
         -   Decreasing Order : sort(a, a+n, greater<int>);
 
         -   Custom comparison Function
