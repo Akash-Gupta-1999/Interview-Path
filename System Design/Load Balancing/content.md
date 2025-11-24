@@ -181,130 +181,130 @@
     - Users G–M → Server 2  
     - Users N–Z → Server 3  
 
- -  Why Sharding Is Needed ?
-    As data grows, a single database instance hits limits:
+    -  Why Sharding Is Needed ?
+        As data grows, a single database instance hits limits:
 
-    - CPU overloaded  
-    - RAM insufficient  
-    - Queries slow  
-    - Storage full  
-    - Write throughput bottleneck  
+        - CPU overloaded  
+        - RAM insufficient  
+        - Queries slow  
+        - Storage full  
+        - Write throughput bottleneck  
 
-    ➡ Sharding lets you add more machines instead of upgrading to bigger ones.
+        ➡ Sharding lets you add more machines instead of upgrading to bigger ones.
 
- -  How Sharding Works (Simple)
-    - Data is divided based on a shard key (column/attribute used for partitioning).  
-    - Each shard is a complete independent DB, not just a table slice.  
+    -  How Sharding Works (Simple)
+        - Data is divided based on a shard key (column/attribute used for partitioning).  
+        - Each shard is a complete independent DB, not just a table slice.  
 
-    Example shard keys:
-    - `user_id`  
-    - `customer_id`  
-    - `region`  
-    - `email prefix`  
+        Example shard keys:
+        - `user_id`  
+        - `customer_id`  
+        - `region`  
+        - `email prefix`  
 
- -  Types of Sharding
+    -  Types of Sharding
 
-    1. Hash-Based Sharding
+        1. Hash-Based Sharding
 
-        shard = hash(user_id) % N
+            shard = hash(user_id) % N
 
-        - ✔ Even distribution  
-        - ❌ Adding/removing shards = heavy data movement (fixed by consistent hashing)  
+            - ✔ Even distribution  
+            - ❌ Adding/removing shards = heavy data movement (fixed by consistent hashing)  
 
-        Used in: Redis (some modes), MongoDB (default hash sharding)
+            Used in: Redis (some modes), MongoDB (default hash sharding)
 
-    2. Range-Based Sharding
+        2. Range-Based Sharding
 
-        Shard 1 → user_id 1–10,000
-        Shard 2 → user_id 10,001–20,000
-        Shard 3 → user_id 20,001–30,000
+            Shard 1 → user_id 1–10,000
+            Shard 2 → user_id 10,001–20,000
+            Shard 3 → user_id 20,001–30,000
 
-        - ✔ Easy to query by range  
-        - ❌ Hotspots possible (e.g., recent users all go to last shard)  
+            - ✔ Easy to query by range  
+            - ❌ Hotspots possible (e.g., recent users all go to last shard)  
 
-        Used in: MySQL sharded systems, Big OLTP systems
+            Used in: MySQL sharded systems, Big OLTP systems
 
-    3. Directory / Lookup Table Sharding
+        3. Directory / Lookup Table Sharding
 
-        User A → Shard 1
-        User B → Shard 3
-        User C → Shard 2
+            User A → Shard 1
+            User B → Shard 3
+            User C → Shard 2
 
-        - ✔ Flexible  
-        - ✔ Easy to add shards  
-        - ❌ Directory must be highly available  
+            - ✔ Flexible  
+            - ✔ Easy to add shards  
+            - ❌ Directory must be highly available  
 
-        Used in: Uber (trips data), Facebook (lookup-based)
+            Used in: Uber (trips data), Facebook (lookup-based)
 
-    4. Geo-Sharding
-        Split by geographical region:
-        - Asia shard  
-        - Europe shard  
-        - US shard  
+        4. Geo-Sharding
+            Split by geographical region:
+            - Asia shard  
+            - Europe shard  
+            - US shard  
 
-        - ✔ Low latency  
-        - ✔ Data residency compliance  
-        - ❌ Hard to read across regions  
+            - ✔ Low latency  
+            - ✔ Data residency compliance  
+            - ❌ Hard to read across regions  
 
-        Used in: Google Spanner, AWS DynamoDB Global Tables
+            Used in: Google Spanner, AWS DynamoDB Global Tables
 
- -  Sharding in NoSQL vs SQL
+    -  Sharding in NoSQL vs SQL
 
-    SQL:
-    - Manual in MySQL/PostgreSQL clusters  
-    - Tools: Vitess, Citus  
+        SQL:
+        - Manual in MySQL/PostgreSQL clusters  
+        - Tools: Vitess, Citus  
 
-    NoSQL:
-    - Cassandra → consistent hashing + vnodes  
-    - MongoDB → shard key + router (mongos)  
-    - DynamoDB → automatic partitioning  
+        NoSQL:
+        - Cassandra → consistent hashing + vnodes  
+        - MongoDB → shard key + router (mongos)  
+        - DynamoDB → automatic partitioning  
 
- ✅ Advantages of Sharding
-    - Scales horizontally (add servers easily)  
-    - Improves read/write throughput  
-    - Reduces load per database  
-    - Improves fault isolation  
-    - Enables storage distribution  
+    ✅ Advantages of Sharding
+        - Scales horizontally (add servers easily)  
+        - Improves read/write throughput  
+        - Reduces load per database  
+        - Improves fault isolation  
+        - Enables storage distribution  
 
- ⚠️ Disadvantages of Sharding
-    - Complex to maintain  
-    - Cross-shard queries are slow  
-    - Joins across shards are difficult  
-    - Resharding (changing shard key) is painful  
-    - Distributed transactions are expensive  
+    ⚠️ Disadvantages of Sharding
+        - Complex to maintain  
+        - Cross-shard queries are slow  
+        - Joins across shards are difficult  
+        - Resharding (changing shard key) is painful  
+        - Distributed transactions are expensive  
 
- 📖 Sharding Example – User Table
+    📖 Sharding Example – User Table
 
-    Without sharding → one DB:
+        Without sharding → one DB:
 
-        users(id, name, email, password)
+            users(id, name, email, password)
 
-        ➡ Grows to 500M users → slow.
+            ➡ Grows to 500M users → slow.
 
-    With sharding:
-        - Shard 1: users 0–100M  
-        - Shard 2: users 100M–200M  
-        - Shard 3: users 200M–300M  
-        - Shard 4: users 300M–400M  
-        - Shard 5: users 400M–500M  
+        With sharding:
+            - Shard 1: users 0–100M  
+            - Shard 2: users 100M–200M  
+            - Shard 3: users 200M–300M  
+            - Shard 4: users 300M–400M  
+            - Shard 5: users 400M–500M  
 
-    Each shard has its own CPU, RAM, storage.
+        Each shard has its own CPU, RAM, storage.
 
- 🔍 Sharding vs Partitioning
+    🔍 Sharding vs Partitioning
 
-    | Concept       | Meaning                                |
-    |---------------|----------------------------------------|
-    | Partitioning  | Dividing data inside a single DB server |
-    | Sharding      | Data partitioned across multiple machines |
+        | Concept       | Meaning                                |
+        |---------------|----------------------------------------|
+        | Partitioning  | Dividing data inside a single DB server |
+        | Sharding      | Data partitioned across multiple machines |
 
-    👉 Sharding = Distributed Partitioning
+        👉 Sharding = Distributed Partitioning
 
- 🔄 Sharding + Consistent Hashing
-    - Sometimes used together  
-    - Consistent hashing decides the shard  
-    - Shards are placed on a ring  
-    - Adding/removing shards only relocates few keys  
+    🔄 Sharding + Consistent Hashing
+        - Sometimes used together  
+        - Consistent hashing decides the shard  
+        - Shards are placed on a ring  
+        - Adding/removing shards only relocates few keys  
 
-    Used in: Cassandra, Dynamo, Redis Cluster  
+        Used in: Cassandra, Dynamo, Redis Cluster  
 
 
