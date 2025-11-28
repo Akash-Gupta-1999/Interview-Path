@@ -1,3 +1,7 @@
 -   Types of Scalability
 -   System Design Terminologies and their Tradeoff's
+-   Domain Name System (DNS)
+-   Content Delivery Network (CDN)
+-   Load Balancer
+-   Reverse Proxy
 -   How to approach a system design interview question ?
