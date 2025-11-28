@@ -1,0 +1,3 @@
+-   Types of Scalability
+-   System Design Terminologies and their Tradeoff's
+-   How to approach a system design interview question ?
