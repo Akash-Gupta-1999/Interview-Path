@@ -4,4 +4,9 @@
 -   Content Delivery Network (CDN)
 -   Load Balancer
 -   Reverse Proxy
+-   Monolith and Microservices
+-   Databases
+-   Caching
+-   Asynchronism
+-   Communication
 -   How to approach a system design interview question ?
