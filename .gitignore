@@ -1,2 +1,3 @@
 *.exe
-sd primer
+sd primer/*
+test.cpp

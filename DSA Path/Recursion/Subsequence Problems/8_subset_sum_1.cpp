@@ -23,7 +23,7 @@ class Solution {
 
 
 int main() {
-  vector < int > arr{3,1,2};
+  vector < int > arr{3,1,2, 5};
   Solution ob;
   vector < int > ans = ob.subsetSums(arr, arr.size());
   sort(ans.begin(), ans.end());

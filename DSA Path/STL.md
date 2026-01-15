@@ -26,7 +26,7 @@
         -   Declare : vector<int>::iterator it = v.begin, auto it = v.begin()
         -   it -> gives position, *it -> gives value at that point
     
-    -   Traversal/looping through Vectors : for(auto it=v.begin();it!=v.end();it++) ; for(auto it : v)
+    -   Traversal/looping through Vectors : for(auto it=v.begin();it!=v.end();it++) ; for(int i : v)
 
     -   Erase -> Takes constant time if Erasing is at the end, if not at the end it will be O(N)
         -   v.erase(v.begin()+1) -> removes the second element from the Array
@@ -54,6 +54,8 @@
 
 --  Deque ------> Double Ended Queue (Implemented using Double Linked List) : Unlike a vector which is optimized for insertions/deletions at the end, or a list which is efficient for insertions/deletions anywhere but lacks direct element access, a std::deque provides efficient push_front(), pop_front(), push_back(), and pop_back() operations.
     
+    std::deque is implemented as multiple fixed-size contiguous memory blocks allocated at different locations, with a centralized contiguous array (called a map) of pointers that indexes these blocks. (blocks are usually of same sizes)
+
     Declare : deque<int> dq;
 
     -   dq.push_back()
@@ -183,7 +185,7 @@
             pair<int,int> a[] = {{1,2},{2,1},{4,1}}
             sort(a,a+n,comp) ---> comp should only return bool value
             bool comp(pair<int,int> p1, pair<int,int> p2){
-                if(p1.second<p2.second>)
+                if(p1.second<p2.second)
                     return true;
                 if(p1.second>p2.second)
                     return false;

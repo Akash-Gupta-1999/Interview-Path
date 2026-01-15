@@ -875,7 +875,7 @@ Each layer has a specific role and communicates only with the layer above and be
         - VLSM allows different subnets within a network to have different masks, increasing flexibility and efficient IP usage.  
         - It is essentially subnetting a subnet.
 
--  Classless Addressing (CIDR), Subnetting & Supernetting
+-   Classless Addressing (CIDR), Subnetting & Supernetting
     As we have already learned about Classful Addressing, in Classful addressing the number of hosts within a network is fixed depending on the network class:  
     - Class A: 2^24 hosts  
     - Class B: 2^16 hosts  
@@ -957,7 +957,7 @@ Each layer has a specific role and communicates only with the layer above and be
             - Ensures private IP addresses do not conflict within a local network.  
             - These mechanisms simplify network management and ensure proper addressing for all devices.
 
--  ARP (Address Resolution Protocol) & Reverse-ARP
+-   ARP (Address Resolution Protocol) & Reverse-ARP
 
     In a computer network, each device has two types of addresses:  
     - Physical Address (MAC): Permanent and fixed for a device, does not change across networks.  

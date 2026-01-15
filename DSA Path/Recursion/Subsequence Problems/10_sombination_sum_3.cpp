@@ -27,6 +27,21 @@ void rec_sum_sumVar(int i, int sum, vector<int>& nums, vector<vector<int>>& res,
     rec_sum_sumVar(i + 1, sum, nums, res, curr, k, n);
 }
 
+// void rec_sum_sumVar(int idx, int sum, vector<int>& nums, vector<vector<int>>& res, vector<int> curr, int k, int n) {
+//     if (curr.size() == k && sum == n) { // Corrected to check exactly k elements
+//         res.push_back(curr);
+//         return;
+//     }
+//     for(int i=idx;i<nums.size();i++){
+//         if (curr.size() >= k || sum > n) break;
+
+//         // Include nums[i]
+//         curr.push_back(nums[i]);
+//         rec_sum_sumVar(i + 1, sum + nums[i], nums, res, curr, k, n);
+//         curr.pop_back();
+//     }
+// }
+
 vector<vector<int>> combinationSum3_sumVar(int k, int n) {
     vector<int> nums = {1,2,3,4,5,6,7,8,9};
     vector<vector<int>> res;

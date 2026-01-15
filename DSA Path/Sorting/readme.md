@@ -1,22 +1,22 @@
 -   Sorting
-            -   Bubble Sort : bubbling the elements to end : O(n*n) for worst and avg, O(n) for best when array is already sorted
-            -   Selection Sort : pick the min_element and push to initials : O(n*n) for best,avg,worst
-            -   Insertion Sort : pick a key and insert at right position : O(n*n) for worst and avg, O(n) for best when array is already sorted
-            -   Merge sort : divide and conquer, O(nlogn) for best,avg,worst
-            -   Quick sort : Pick a pivot(last element) and place it in correct position and patition the array around pivot and call recursively : 0(nlogn) for best and avaerage, 0(n*n) for worst when pivot is chosen as last element in an already sorted Array
-            -   Heap Sort
-                -   2i+1, 2i+2 : these are the 2 child nodes of a parent node i in a tree
-                -   (i/2) - 1 : it is the index of the last node which is not a leaf node
-                -   Heapify the array and place the first elemnt (Largest) at end and then heapify only swapped idx and do it all again
-                -   O(nlogn) for best,worst and average
-            -   Important Points
-                -   Quick sort is the quickest on Avearge Points for Sorting
-                -   When input is small and array is mostly sorted then use Insertion Sort
-                -   Bubble sort and Selection sort is not good for any use in practical cases
-                -   Merge sort is best as all 3 cases (best/avearge/worst) is samebut space is O(N)
-                -   Quick sort is better than Merge sort in avg cases as space complexity is O(logn) compare to O(n). But bad in worst case
-            -   Non Comparison Sorts
-                -   Counting Sort : for smallrange, non-negative numbers
-                    -   use a hash table to get counts of elements then have a cum sum which shows position of the element then automatically assign the values : 0(n+k) // k is the largest element size
-                -   Radix sort : do the count sort for units place then do for ten's place then do for hundereds place and so on : O(n * log(max_element)) : for non-negative and large integers
-                -   Bucket sort : these algo for numbers [0,1) ; multiply them by 10 and then insert into the buckets from 0 to 9; if there is more than one in position then insert into a linked list bucket; sort buckets and then arrange all buckets;// O(n+k) in best and average ; O(n*n) in worst case
+    -   Bubble Sort : bubbling the elements to end : O(n*n) for worst and avg, O(n) for best when array is already sorted
+    -   Selection Sort : pick the min_element and push to initials : O(n*n) for best,avg,worst
+    -   Insertion Sort : pick a key and insert at right position : O(n*n) for worst and avg, O(n) for best when array is already sorted
+    -   Merge sort : divide and conquer, O(nlogn) for best,avg,worst
+    -   Quick sort : Pick a pivot(last element) and place it in correct position and partition the array around pivot and call recursively : 0(nlogn) for best and avaerage, 0(n*n) for worst when pivot is chosen as last element in an already sorted Array
+    -   Heap Sort
+        -   2i+1, 2i+2 : these are the 2 child nodes of a parent node i in a tree
+        -   (i/2) - 1 : it is the index of the last node which is not a leaf node
+        -   Heapify the array and place the first elemnt (Largest) at end and then heapify only swapped idx and do it all again
+        -   O(nlogn) for best,worst and average
+    -   Important Points
+        -   Quick sort is the quickest on Avearge Points for Sorting
+        -   When input is small and array is mostly sorted then use Insertion Sort
+        -   Bubble sort and Selection sort is not good for any use in practical cases
+        -   Merge sort is best as all 3 cases (best/avearge/worst) is same but space is O(N)
+        -   Quick sort is better than Merge sort in avg cases as space complexity is O(logn) compare to O(n). But bad in worst case
+    -   Non Comparison Sorts
+        -   Counting Sort : for smallrange, non-negative numbers
+            -   use a hash table to get counts of elements then have a cum sum which shows position of the element then automatically assign the values : 0(n+k) // k is the largest element size
+        -   Radix sort : do the count sort for units place then do for ten's place then do for hundereds place and so on : O(n * log(max_element)) : for non-negative and large integers
+        -   Bucket sort : these algo for numbers [0,1) ; multiply them by 10 and then insert into the buckets from 0 to 9; if there is more than one in position then insert into a linked list bucket; sort buckets and then arrange all buckets;// O(n+k) in best and average ; O(n*n) in worst case

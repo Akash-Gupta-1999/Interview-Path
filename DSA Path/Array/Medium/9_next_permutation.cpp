@@ -2,28 +2,24 @@
 using namespace std;
 
 void nextPermutation(vector<int>& nums) {
-        if(nums.size() == 1)
-            return;
-        int n = nums.size(), temp = -1;
-        bool flag = false;
-        for(int i = n-2;i>=0;i--){
-            if(nums[i] < nums[i+1]){
-                temp = i;
-                break;
-            }
-        }
-        if(temp == -1){
-            reverse(nums.begin(),nums.end());
-            return;
-        }
-        sort(nums.begin()+temp+1,nums.end());
-        for(int i = temp+1;i<n;i++){
-            if(nums[i] > nums[temp]){
-                swap(nums[temp],nums[i]);
-                break;
-            }
-        }
+    int n = nums.size();
+    int i = n - 2;
+
+    // Step 1: find break point
+    while (i >= 0 && nums[i] >= nums[i + 1])
+        i--;
+
+    // Step 2: find just larger element
+    if (i >= 0) {
+        int j = n - 1;
+        while (nums[j] <= nums[i])
+            j--;
+        swap(nums[i], nums[j]);
     }
+
+    // Step 3: reverse suffix
+    reverse(nums.begin() + i + 1, nums.end());
+}
 
 int main()
 {

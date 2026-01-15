@@ -51,24 +51,30 @@ bool wordBreakMemo(string s, vector<string> &wordDict) {
 ----------------------------------------------*/
 // Time Complexity: O(n^2) worst case
 // Space Complexity: O(n) dp array
-bool wordBreakBottomUp(string s, vector<string> &wordDict) {
+ bool wordBreakBottomUp(string s, vector<string>& wordDict) {
+    int n = s.length();
     unordered_set<string> dict(wordDict.begin(), wordDict.end());
-    int n = s.size();
     vector<bool> dp(n + 1, false);
-    dp[n] = true; // empty string is valid
+    dp[0] = true;  // Empty string is always "segmented"
+    int maxLen = 0;
 
-    for (int i = n - 1; i >= 0; i--) {
-        string word = "";
-        for (int j = i; j < n; j++) {
-            word += s[j];
-            if (dict.count(word) && dp[j + 1]) {
+    // Find the maximum length of the words in the dictionary
+    for (const string& word : wordDict) {
+        maxLen = max(maxLen, (int)word.size());
+    }
+
+    // DP to check if the string can be segmented
+    for (int i = 1; i <= n; ++i) {
+        for (int j = max(0, i - maxLen); j < i; ++j) {
+            if (dp[j] && dict.find(s.substr(j, i - j)) != dict.end()) {
                 dp[i] = true;
-                break;
+                break;  // Early termination when we find a valid word
             }
         }
     }
-    return dp[0];
-}
+
+    return dp[n];  // Return if the entire string can be segmented
+    }
 
 /*----------------------------------------------
 🔹 Comparison Table

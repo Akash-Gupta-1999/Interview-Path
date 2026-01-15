@@ -1,36 +1,30 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-int skip_spaces(const string &s, int i) {
-    if (i >= s.size() || s[i] != ' ')
-        return i;
-    return skip_spaces(s, i + 1);
-}
-
-int is_sign(const string &s, int i, int &sign) {
-    if (i < s.size() && (s[i] == '+' || s[i] == '-')) {
-        sign = (s[i] == '-') ? -1 : 1;
-        return i + 1;
-    }
-    return i;
-}
-
-long long parse_digit(const string &s, int i, int sign, long long curr) {
-    if (i >= s.size() || !isdigit(s[i]))
-        return curr;
-    curr = curr * 10 + (s[i] - '0');
-    if (sign == 1 && curr > INT_MAX) return INT_MAX;
-    if (sign == -1 && -curr < INT_MIN) return INT_MIN;
-    return parse_digit(s, i + 1, sign, curr);
-}
-
 int myAtoi(string s) {
-    int sign = 1;
-    int start = skip_spaces(s, 0);
-    start = is_sign(s, start, sign);
-    long long curr = parse_digit(s, start, sign, 0);
-    curr = sign * curr;
-    return (int) curr;
+    int i = 0, sign = 1;
+    long long res = 0; // Using long to handle overflow cases
+
+    // Trim leading spaces
+    while (i < s.size() && s[i] == ' ') i++;
+    if (i == s.size()) return 0;
+
+    // Check for sign
+    if (s[i] == '-') { sign = -1; i++; }
+    else if (s[i] == '+') i++;
+
+    // Process numerical characters
+    while (i < s.size() && isdigit(s[i])) {
+        res = res * 10 + (s[i] - '0');
+
+        // Handle overflow
+        if (sign * res > INT_MAX) return INT_MAX;  //if (res > (INT_MAX - digit) / 10) for interview safe
+        if (sign * res < INT_MIN) return INT_MIN;
+
+        i++;
+    }
+
+    return (int)(sign * res);
 }
 
 int main() {
