@@ -1,0 +1,5 @@
+-   Introduction to SQL
+-   Select Statements (select,from,where,group by,having,order by,distinct,top) and Order of Execution
+-   Data Definition Language (DDL)
+-   Data Manipulation Language (DML)
+-   SQL Where Clause Filters
