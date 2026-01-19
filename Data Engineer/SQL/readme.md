@@ -3,3 +3,8 @@
 -   Data Definition Language (DDL)
 -   Data Manipulation Language (DML)
 -   SQL Where Clause Filters
+-   SQL Joins
+-   SQL Sets
+-   Intro to SQL Functions and String Functions
+-   Numeric Functions
+-   Date Time Functions
