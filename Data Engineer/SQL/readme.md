@@ -21,3 +21,10 @@
 17. views
 18. CTAS (Create Table As Select)
 19. Temporary Tables
+20. Indexes
+21. SQL Execution Plans
+22. SQL Partitioning
+23. SQL Performance Tuning Optimization
+24. Stored Procedures
+25. Triggers
+16. AI and SQL
